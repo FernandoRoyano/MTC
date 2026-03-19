@@ -42,8 +42,10 @@ export default function DocumentosPage() {
   const [uploadTipo, setUploadTipo] = useState<TipoDocumento>('otro')
   const [uploadNotas, setUploadNotas] = useState('')
   const [uploadFecha, setUploadFecha] = useState('')
+  const [uploadVisitaId, setUploadVisitaId] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [visitas, setVisitas] = useState<{ id: string; numero_visita: number; fecha: string }[]>([])
 
   const supabase = createClient()
 
@@ -53,16 +55,22 @@ export default function DocumentosPage() {
 
   async function cargar() {
     setLoading(true)
-    const [pacRes, docsRes] = await Promise.all([
+    const [pacRes, docsRes, visitasRes] = await Promise.all([
       supabase.from('pacientes').select('*').eq('id', pacienteId).single(),
       supabase
         .from('documentos')
         .select('*')
         .eq('paciente_id', pacienteId)
         .order('created_at', { ascending: false }),
+      supabase
+        .from('visitas')
+        .select('id, numero_visita, fecha')
+        .eq('paciente_id', pacienteId)
+        .order('numero_visita', { ascending: false }),
     ])
     if (pacRes.data) setPaciente(pacRes.data)
     if (docsRes.data) setDocumentos(docsRes.data)
+    if (visitasRes.data) setVisitas(visitasRes.data)
     setLoading(false)
   }
 
@@ -98,6 +106,7 @@ export default function DocumentosPage() {
       archivo_url: filePath,
       notas: uploadNotas || null,
       fecha_documento: uploadFecha || null,
+      visita_id: uploadVisitaId || null,
     })
 
     if (!dbError) {
@@ -138,6 +147,7 @@ export default function DocumentosPage() {
     setUploadTipo('otro')
     setUploadNotas('')
     setUploadFecha('')
+    setUploadVisitaId('')
     setSelectedFile(null)
     if (fileRef.current) fileRef.current.value = ''
   }
@@ -208,7 +218,7 @@ export default function DocumentosPage() {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
               <input
@@ -237,6 +247,21 @@ export default function DocumentosPage() {
                 onChange={(e) => setUploadFecha(e.target.value)}
                 className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-salvia-300"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Visita asociada</label>
+              <select
+                value={uploadVisitaId}
+                onChange={(e) => setUploadVisitaId(e.target.value)}
+                className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              >
+                <option value="">Sin visita</option>
+                {visitas.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    Visita #{v.numero_visita} — {new Date(v.fecha).toLocaleDateString('es-ES')}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
