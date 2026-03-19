@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
   Leaf,
+  BookOpen,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -18,6 +19,7 @@ const navItems = [
   { href: '/pacientes', label: 'Pacientes', icon: Users },
   { href: '/plantillas', label: 'Plantillas', icon: FileText },
   { href: '/configuracion', label: 'Configuración', icon: Settings },
+  { href: '/guia', label: 'Guía de uso', icon: BookOpen },
 ]
 
 export default function Sidebar() {
