@@ -20,6 +20,7 @@ import {
   FileText,
   AlertTriangle,
   Tag,
+  FolderOpen,
 } from 'lucide-react'
 
 export default function PacienteDetallePage() {
@@ -484,6 +485,18 @@ export default function PacienteDetallePage() {
           </div>
         )}
       </div>
+
+      {/* Documentos */}
+      <Link
+        href={`/pacientes/${paciente.id}/documentos`}
+        className="flex items-center justify-between bg-white border border-arena-200 rounded-xl p-5 hover:border-salvia-300 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <FolderOpen className="w-5 h-5 text-salvia-500" />
+          <span className="font-medium text-gray-700">Documentos y analíticas</span>
+        </div>
+        <ArrowLeft className="w-4 h-4 text-gray-400 rotate-180" />
+      </Link>
     </div>
   )
 }

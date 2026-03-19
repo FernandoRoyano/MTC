@@ -41,9 +41,9 @@ export default function LoginPage() {
             <Leaf className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-semibold text-salvia-700">
-            MTC Acupuntura
+            EstiloPat
           </h1>
-          <p className="text-gray-500 mt-1">Gestión de consulta</p>
+          <p className="text-gray-500 mt-1">Clínica MTC</p>
         </div>
 
         {/* Formulario */}
