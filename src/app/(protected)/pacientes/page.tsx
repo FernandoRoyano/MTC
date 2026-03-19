@@ -48,9 +48,9 @@ export default async function PacientesPage() {
                   <p className="font-medium text-gray-800">
                     {paciente.nombre} {paciente.apellidos}
                   </p>
-                  {paciente.motivo_consulta && (
+                  {paciente.motivo_principal && (
                     <p className="text-sm text-gray-500 truncate">
-                      {paciente.motivo_consulta}
+                      {paciente.motivo_principal}
                     </p>
                   )}
                 </div>

@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Users,
-  Calendar,
   FileText,
   LogOut,
   Leaf,
@@ -16,7 +15,6 @@ import { useRouter } from 'next/navigation'
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/pacientes', label: 'Pacientes', icon: Users },
-  { href: '/agenda', label: 'Agenda', icon: Calendar },
   { href: '/plantillas', label: 'Plantillas', icon: FileText },
 ]
 
@@ -39,8 +37,8 @@ export default function Sidebar() {
             <Leaf className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-salvia-700">MTC</h1>
-            <p className="text-xs text-gray-500">Acupuntura</p>
+            <h1 className="text-lg font-semibold text-salvia-700">EstiloPat</h1>
+            <p className="text-xs text-gray-500">Clínica MTC</p>
           </div>
         </Link>
       </div>

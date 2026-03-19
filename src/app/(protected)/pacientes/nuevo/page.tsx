@@ -11,12 +11,15 @@ import Link from 'next/link'
 
 const pacienteSchema = z.object({
   nombre: z.string().min(1, 'El nombre es obligatorio'),
-  apellidos: z.string().optional(),
+  apellidos: z.string().min(1, 'Los apellidos son obligatorios'),
+  fecha_nacimiento: z.string().optional(),
+  sexo: z.enum(['mujer', 'hombre', 'otro', 'no_especificado']).optional(),
   telefono: z.string().optional(),
   email: z.string().email('Email no válido').optional().or(z.literal('')),
-  fecha_nacimiento: z.string().optional(),
-  motivo_consulta: z.string().optional(),
-  notas_generales: z.string().optional(),
+  direccion: z.string().optional(),
+  ocupacion: z.string().optional(),
+  motivo_principal: z.string().optional(),
+  observaciones_generales: z.string().optional(),
 })
 
 type PacienteForm = z.infer<typeof pacienteSchema>
@@ -46,7 +49,8 @@ export default function NuevoPacientePage() {
         ...data,
         fecha_nacimiento: data.fecha_nacimiento || null,
         email: data.email || null,
-        user_id: userData.user.id,
+        sexo: data.sexo || null,
+        terapeuta_id: userData.user.id,
       })
       .select()
       .single()
@@ -95,12 +99,43 @@ export default function NuevoPacientePage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Apellidos
+              Apellidos *
             </label>
             <input
               {...register('apellidos')}
               className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm"
               placeholder="Apellidos"
+            />
+            {errors.apellidos && (
+              <p className="text-xs text-terracota-500 mt-1">{errors.apellidos.message}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Sexo y fecha nacimiento */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Sexo
+            </label>
+            <select
+              {...register('sexo')}
+              className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm"
+            >
+              <option value="">Sin especificar</option>
+              <option value="mujer">Mujer</option>
+              <option value="hombre">Hombre</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Fecha de nacimiento
+            </label>
+            <input
+              {...register('fecha_nacimiento')}
+              type="date"
+              className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm"
             />
           </div>
         </div>
@@ -133,41 +168,53 @@ export default function NuevoPacientePage() {
           </div>
         </div>
 
-        {/* Fecha de nacimiento */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Fecha de nacimiento
-          </label>
-          <input
-            {...register('fecha_nacimiento')}
-            type="date"
-            className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm"
-          />
+        {/* Dirección y ocupación */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Dirección
+            </label>
+            <input
+              {...register('direccion')}
+              className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm"
+              placeholder="Dirección"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Ocupación
+            </label>
+            <input
+              {...register('ocupacion')}
+              className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm"
+              placeholder="Ocupación"
+            />
+          </div>
         </div>
 
-        {/* Motivo de consulta */}
+        {/* Motivo principal */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Motivo de consulta
+            Motivo principal de consulta
           </label>
           <textarea
-            {...register('motivo_consulta')}
+            {...register('motivo_principal')}
             rows={3}
             className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm resize-none"
             placeholder="¿Por qué acude a consulta?"
           />
         </div>
 
-        {/* Notas generales */}
+        {/* Observaciones */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Notas generales
+            Observaciones generales
           </label>
           <textarea
-            {...register('notas_generales')}
+            {...register('observaciones_generales')}
             rows={3}
             className="w-full px-3 py-2.5 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 text-sm resize-none"
-            placeholder="Observaciones, alergias, medicación..."
+            placeholder="Alergias, medicación, notas importantes..."
           />
         </div>
 
