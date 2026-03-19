@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Save, Check, Plus, Trash2 } from 'lucide-react'
+import { Save, Check, Plus, Trash2, Upload, X, Image } from 'lucide-react'
 
 interface Props {
   visitaId: string
@@ -48,6 +48,10 @@ export default function ExploracionForm({ visitaId }: Props) {
   // Lengua
   const [lengua, setLengua] = useState<Record<string, string>>({})
   const [lenguaId, setLenguaId] = useState<string | null>(null)
+  const [lenguaImageUrl, setLenguaImageUrl] = useState<string | null>(null)
+  const [lenguaPreview, setLenguaPreview] = useState<string | null>(null)
+  const [uploadingImg, setUploadingImg] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   // Pulso (puede haber múltiples: inicio, durante, final)
   const [pulsos, setPulsos] = useState<Array<{ id?: string; momento: string; datos: Record<string, string>; cualidades: string[] }>>([])
@@ -82,6 +86,13 @@ export default function ExploracionForm({ visitaId }: Props) {
       CAMPOS_LENGUA.forEach(({ key }) => { values[key] = lenguaRes.data[key] || '' })
       values.notas_libres = lenguaRes.data.notas_libres || ''
       setLengua(values)
+      if (lenguaRes.data.imagen_url) {
+        setLenguaImageUrl(lenguaRes.data.imagen_url)
+        const { data: signedData } = await supabase.storage
+          .from('imagenes-lengua')
+          .createSignedUrl(lenguaRes.data.imagen_url, 3600)
+        if (signedData?.signedUrl) setLenguaPreview(signedData.signedUrl)
+      }
     }
 
     if (pulsoRes.data && pulsoRes.data.length > 0) {
@@ -115,7 +126,7 @@ export default function ExploracionForm({ visitaId }: Props) {
     setSaved(false)
 
     // Guardar lengua
-    const lenguaPayload = { visita_id: visitaId, ...lengua }
+    const lenguaPayload = { visita_id: visitaId, ...lengua, imagen_url: lenguaImageUrl }
     if (lenguaId) {
       await supabase.from('exploracion_lengua').update(lenguaPayload).eq('id', lenguaId)
     } else {
@@ -151,6 +162,34 @@ export default function ExploracionForm({ visitaId }: Props) {
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  async function subirImagenLengua(file: File) {
+    setUploadingImg(true)
+    const ext = file.name.split('.').pop()
+    const filePath = `${visitaId}/${Date.now()}.${ext}`
+
+    const { error } = await supabase.storage
+      .from('imagenes-lengua')
+      .upload(filePath, file)
+
+    if (!error) {
+      setLenguaImageUrl(filePath)
+      const { data: signedData } = await supabase.storage
+        .from('imagenes-lengua')
+        .createSignedUrl(filePath, 3600)
+      if (signedData?.signedUrl) setLenguaPreview(signedData.signedUrl)
+    }
+    setUploadingImg(false)
+  }
+
+  async function eliminarImagenLengua() {
+    if (lenguaImageUrl) {
+      await supabase.storage.from('imagenes-lengua').remove([lenguaImageUrl])
+    }
+    setLenguaImageUrl(null)
+    setLenguaPreview(null)
+    if (fileRef.current) fileRef.current.value = ''
   }
 
   function addPulso() {
@@ -217,6 +256,56 @@ export default function ExploracionForm({ visitaId }: Props) {
       {/* LENGUA */}
       {seccion === 'lengua' && (
         <div className="space-y-4">
+          {/* Imagen de lengua */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Foto de lengua</label>
+            {lenguaPreview ? (
+              <div className="relative inline-block">
+                <img
+                  src={lenguaPreview}
+                  alt="Lengua"
+                  className="w-48 h-48 object-cover rounded-xl border border-arena-200"
+                />
+                <button
+                  onClick={eliminarImagenLengua}
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) subirImagenLengua(file)
+                  }}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploadingImg}
+                  className="flex items-center gap-2 px-4 py-3 border-2 border-dashed border-arena-300 rounded-xl text-sm text-gray-500 hover:border-salvia-400 hover:text-salvia-600 transition-colors disabled:opacity-50"
+                >
+                  {uploadingImg ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-salvia-500" />
+                      Subiendo...
+                    </>
+                  ) : (
+                    <>
+                      <Image className="w-4 h-4" />
+                      Subir foto de lengua
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {CAMPOS_LENGUA.map(({ key, label }) => (
               <div key={key}>

@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Users,
   FileText,
+  Settings,
   LogOut,
   Leaf,
 } from 'lucide-react'
@@ -16,6 +17,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/pacientes', label: 'Pacientes', icon: Users },
   { href: '/plantillas', label: 'Plantillas', icon: FileText },
+  { href: '/configuracion', label: 'Configuración', icon: Settings },
 ]
 
 export default function Sidebar() {
