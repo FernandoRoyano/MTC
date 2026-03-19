@@ -95,7 +95,7 @@ export default function EvolucionPage() {
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-arena-200" />
 
             <div className="space-y-6">
-              {visitas.map((v, index) => {
+              {visitas.map((v, _index) => {
                 const anamnesis = v.anamnesis
                 const sintesis = v.sintesis_clinica
                 const tratamiento = v.tratamiento_sesion

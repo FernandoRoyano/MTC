@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Save, Check, Plus, Trash2, Upload, X, Image } from 'lucide-react'
+import { Save, Check, Plus, Trash2, X, Image } from 'lucide-react'
 
 interface Props {
   visitaId: string
@@ -297,7 +297,7 @@ export default function ExploracionForm({ visitaId }: Props) {
                     </>
                   ) : (
                     <>
-                      <Image className="w-4 h-4" />
+                      <Image className="w-4 h-4" alt="" />
                       Subir foto de lengua
                     </>
                   )}

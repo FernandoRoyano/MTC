@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Anamnesis } from '@/types'
 import { Save, Check } from 'lucide-react'
 
 interface Props {

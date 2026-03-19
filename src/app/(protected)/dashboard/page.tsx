@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Plus, Users, FileText, ArrowRight, Calendar, TrendingUp } from 'lucide-react'
+import { Plus, Users, ArrowRight, Calendar, TrendingUp } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = createClient()
