@@ -44,6 +44,8 @@ export default function NuevoPacientePage() {
       .from('pacientes')
       .insert({
         ...data,
+        fecha_nacimiento: data.fecha_nacimiento || null,
+        email: data.email || null,
         user_id: userData.user.id,
       })
       .select()
