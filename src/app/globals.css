@@ -12,20 +12,102 @@ body {
   background: var(--background);
 }
 
+/* Selección de texto con color de marca */
+::selection {
+  background-color: #dae6da;
+  color: #2d532d;
+}
+
+/* Transiciones suaves globales */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Scrollbar personalizado */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f2ede5;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #d9ccb8;
-  border-radius: 3px;
+  border-radius: 100px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #c89b52;
+}
+
+/* Focus ring consistente */
+@layer utilities {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:ring-offset-1;
+  }
+}
+
+/* Animaciones sutiles */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* Cards con hover elevado */
+.card-hover {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card-hover:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+/* Inputs con estilo refinado */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="tel"],
+input[type="number"],
+textarea,
+select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Tags interactivos */
+.tag-interactive {
+  transition: all 0.15s ease;
+}
+
+.tag-interactive:hover {
+  transform: scale(1.03);
+}
+
+.tag-interactive:active {
+  transform: scale(0.97);
 }

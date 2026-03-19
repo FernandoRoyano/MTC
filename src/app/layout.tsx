@@ -8,8 +8,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "MTC Acupuntura - Gestión de Consulta",
-  description: "App de gestión para consulta de Medicina Tradicional China",
+  title: "EstiloPat — Clínica MTC",
+  description: "Plataforma clínica para terapeutas de Medicina Tradicional China",
 }
 
 export default function RootLayout({
