@@ -1,0 +1,146 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+import { Leaf } from 'lucide-react'
+
+export default function ResetPasswordPage() {
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [ready, setReady] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setReady(true)
+      }
+    })
+  }, [])
+
+  const handleReset = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden.')
+      return
+    }
+
+    setLoading(true)
+
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({ password })
+
+    if (error) {
+      setError('No se pudo actualizar la contraseña. Inténtalo de nuevo.')
+      setLoading(false)
+      return
+    }
+
+    router.push('/dashboard')
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-arena-50 via-white to-salvia-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-salvia-100/40 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-terracota-100/30 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-sm relative z-10 animate-fade-in">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 bg-gradient-to-br from-salvia-400 to-salvia-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-salvia-500/20">
+            <Leaf className="w-7 h-7 text-white" />
+          </div>
+          <h1 className="text-xl font-bold text-gray-800 tracking-tight">
+            Nueva contraseña
+          </h1>
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mt-1">
+            EstiloPat - Clínica MTC
+          </p>
+        </div>
+
+        {!ready ? (
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl shadow-black/[0.03] border border-white/80 p-7 text-center">
+            <div className="w-6 h-6 border-2 border-salvia-300 border-t-salvia-600 rounded-full animate-spin mx-auto mb-3" />
+            <p className="text-sm text-gray-500">Verificando enlace...</p>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleReset}
+            className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl shadow-black/[0.03] border border-white/80 p-7 space-y-5"
+          >
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"
+              >
+                Nueva contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="w-full px-4 py-2.5 rounded-xl border border-arena-200 bg-white focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 transition-all text-sm"
+                placeholder="Mínimo 6 caracteres"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"
+              >
+                Confirmar contraseña
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+                className="w-full px-4 py-2.5 rounded-xl border border-arena-200 bg-white focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 transition-all text-sm"
+                placeholder="Repite la contraseña"
+              />
+            </div>
+
+            {error && (
+              <div className="text-sm text-terracota-500 bg-terracota-50 px-4 py-2.5 rounded-xl border border-terracota-100 animate-scale-in">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-salvia-500 to-salvia-600 hover:from-salvia-600 hover:to-salvia-700 text-white font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm shadow-sm shadow-salvia-500/20 hover:shadow-md hover:shadow-salvia-500/25"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Guardando...
+                </span>
+              ) : (
+                'Guardar nueva contraseña'
+              )}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  )
+}

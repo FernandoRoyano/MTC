@@ -9,7 +9,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
+  const [resetMode, setResetMode] = useState(false)
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -30,6 +32,27 @@ export default function LoginPage() {
     }
 
     router.push('/dashboard')
+  }
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setSuccess('')
+    setLoading(true)
+
+    const supabase = createClient()
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+
+    if (error) {
+      setError('No se pudo enviar el email. Verifica tu dirección.')
+      setLoading(false)
+      return
+    }
+
+    setSuccess('Te hemos enviado un email con instrucciones para restablecer tu contraseña.')
+    setLoading(false)
   }
 
   return (
@@ -56,7 +79,7 @@ export default function LoginPage() {
 
         {/* Formulario */}
         <form
-          onSubmit={handleLogin}
+          onSubmit={resetMode ? handleResetPassword : handleLogin}
           className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl shadow-black/[0.03] border border-white/80 p-7 space-y-5"
         >
           <div>
@@ -77,27 +100,35 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"
-            >
-              Contraseña
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2.5 rounded-xl border border-arena-200 bg-white focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 transition-all text-sm"
-              placeholder="••••••••"
-            />
-          </div>
+          {!resetMode && (
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"
+              >
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-2.5 rounded-xl border border-arena-200 bg-white focus:outline-none focus:ring-2 focus:ring-salvia-300 focus:border-salvia-400 transition-all text-sm"
+                placeholder="••••••••"
+              />
+            </div>
+          )}
 
           {error && (
             <div className="text-sm text-terracota-500 bg-terracota-50 px-4 py-2.5 rounded-xl border border-terracota-100 animate-scale-in">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="text-sm text-salvia-600 bg-salvia-50 px-4 py-2.5 rounded-xl border border-salvia-100 animate-scale-in">
+              {success}
             </div>
           )}
 
@@ -109,11 +140,19 @@ export default function LoginPage() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Entrando...
+                {resetMode ? 'Enviando...' : 'Entrando...'}
               </span>
             ) : (
-              'Entrar'
+              resetMode ? 'Enviar email de recuperación' : 'Entrar'
             )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setResetMode(!resetMode); setError(''); setSuccess('') }}
+            className="w-full text-xs text-gray-400 hover:text-salvia-500 transition-colors"
+          >
+            {resetMode ? 'Volver al inicio de sesión' : '¿Olvidaste tu contraseña?'}
           </button>
         </form>
 

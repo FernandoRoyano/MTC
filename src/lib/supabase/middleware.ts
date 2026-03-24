@@ -37,7 +37,8 @@ export async function updateSession(request: NextRequest) {
   // Si no hay usuario autenticado y no está en /login, redirigir a login
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login')
+    !request.nextUrl.pathname.startsWith('/login') &&
+    !request.nextUrl.pathname.startsWith('/reset-password')
   ) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
