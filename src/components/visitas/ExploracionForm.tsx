@@ -297,7 +297,7 @@ export default function ExploracionForm({ visitaId }: Props) {
                     </>
                   ) : (
                     <>
-                      <Image className="w-4 h-4" alt="" />
+                      <Image className="w-4 h-4" />
                       Subir foto de lengua
                     </>
                   )}
