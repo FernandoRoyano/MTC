@@ -327,7 +327,7 @@ export default function DocumentosPage() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-arena-100 rounded-lg flex items-center justify-center">
                   {doc.tipo === 'imagen' ? (
-                    <Image className="w-5 h-5 text-salvia-500" alt="" />
+                    <Image className="w-5 h-5 text-salvia-500" />
                   ) : (
                     <FileText className="w-5 h-5 text-salvia-500" />
                   )}
