@@ -192,7 +192,9 @@ export default function TratamientoForm({ visitaId }: Props) {
               value={moxaNotas}
               onChange={(e) => setMoxaNotas(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
               placeholder="Notas sobre moxa..."
             />
           )}
@@ -214,7 +216,9 @@ export default function TratamientoForm({ visitaId }: Props) {
               value={tuinaNotas}
               onChange={(e) => setTuinaNotas(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
               placeholder="Notas sobre tuina..."
             />
           )}
@@ -236,7 +240,9 @@ export default function TratamientoForm({ visitaId }: Props) {
               value={ventosasNotas}
               onChange={(e) => setVentosasNotas(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
               placeholder="Notas sobre ventosas..."
             />
           )}
@@ -283,7 +289,9 @@ export default function TratamientoForm({ visitaId }: Props) {
           value={otrasTecnicas}
           onChange={(e) => setOtrasTecnicas(e.target.value)}
           rows={2}
-          className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-salvia-300"
+          className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
         />
       </div>
 
@@ -295,7 +303,9 @@ export default function TratamientoForm({ visitaId }: Props) {
             value={observaciones}
             onChange={(e) => setObservaciones(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-salvia-300"
+            className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
           />
         </div>
         <div>
@@ -304,7 +314,9 @@ export default function TratamientoForm({ visitaId }: Props) {
             value={respuesta}
             onChange={(e) => setRespuesta(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-salvia-300"
+            className="w-full px-3 py-2 border border-arena-200 rounded-lg text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-salvia-300"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
             placeholder="Sensaciones durante/después..."
           />
         </div>

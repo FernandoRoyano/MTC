@@ -358,9 +358,19 @@ export default function ExploracionForm({ visitaId }: Props) {
             <label className="block text-sm font-medium text-gray-700 mb-1">Notas libres</label>
             <textarea
               value={lengua.notas_libres || ''}
-              onChange={(e) => setLengua({ ...lengua, notas_libres: e.target.value })}
+              onChange={(e) => {
+                setLengua({ ...lengua, notas_libres: e.target.value })
+                e.target.style.height = 'auto'
+                e.target.style.height = e.target.scrollHeight + 'px'
+              }}
+              ref={(el) => {
+                if (el && lengua.notas_libres) {
+                  el.style.height = 'auto'
+                  el.style.height = el.scrollHeight + 'px'
+                }
+              }}
               rows={3}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-vertical"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
             />
           </div>
         </div>
@@ -461,9 +471,19 @@ export default function ExploracionForm({ visitaId }: Props) {
               {key === 'otras_observaciones' ? (
                 <textarea
                   value={observacion[key] || ''}
-                  onChange={(e) => setObservacion({ ...observacion, [key]: e.target.value })}
+                  onChange={(e) => {
+                    setObservacion({ ...observacion, [key]: e.target.value })
+                    e.target.style.height = 'auto'
+                    e.target.style.height = e.target.scrollHeight + 'px'
+                  }}
+                  ref={(el) => {
+                    if (el && observacion[key]) {
+                      el.style.height = 'auto'
+                      el.style.height = el.scrollHeight + 'px'
+                    }
+                  }}
                   rows={3}
-                  className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-vertical"
+                  className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
                 />
               ) : (
                 <input

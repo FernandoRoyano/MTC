@@ -188,8 +188,10 @@ export default function ProtocoloForm({ visitaId, pacienteId, pacienteNombre }: 
             <textarea
               value={form[key] || ''}
               onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
               rows={3}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
             />
           </div>
         ))}

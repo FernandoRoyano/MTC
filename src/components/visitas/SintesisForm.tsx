@@ -108,7 +108,9 @@ export default function SintesisForm({ visitaId }: Props) {
             value={form.resumen_datos || ''}
             onChange={(e) => setForm({ ...form, resumen_datos: e.target.value })}
             rows={4}
-            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
             placeholder="Integración de síntomas, lengua, pulso y analíticas..."
           />
         </div>
@@ -127,7 +129,9 @@ export default function SintesisForm({ visitaId }: Props) {
             value={form.diagnostico_energetico || ''}
             onChange={(e) => setForm({ ...form, diagnostico_energetico: e.target.value })}
             rows={3}
-            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
           />
         </div>
 
@@ -176,7 +180,9 @@ export default function SintesisForm({ visitaId }: Props) {
               value={form.terreno || ''}
               onChange={(e) => setForm({ ...form, terreno: e.target.value })}
               rows={2}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
             />
           </div>
           <div>
@@ -185,7 +191,9 @@ export default function SintesisForm({ visitaId }: Props) {
               value={form.hipotesis_clinica || ''}
               onChange={(e) => setForm({ ...form, hipotesis_clinica: e.target.value })}
               rows={2}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
             />
           </div>
         </div>
@@ -196,7 +204,9 @@ export default function SintesisForm({ visitaId }: Props) {
             value={form.prioridades_terapeuticas || ''}
             onChange={(e) => setForm({ ...form, prioridades_terapeuticas: e.target.value })}
             rows={2}
-            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
           />
         </div>
 
@@ -206,7 +216,9 @@ export default function SintesisForm({ visitaId }: Props) {
             value={form.relacion_integrativa || ''}
             onChange={(e) => setForm({ ...form, relacion_integrativa: e.target.value })}
             rows={2}
-            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
             placeholder="Cómo se relacionan síntomas, lengua, pulso y analíticas..."
           />
         </div>
@@ -217,7 +229,9 @@ export default function SintesisForm({ visitaId }: Props) {
             value={form.evolucion_respecto_anterior || ''}
             onChange={(e) => setForm({ ...form, evolucion_respecto_anterior: e.target.value })}
             rows={2}
-            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+            className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
           />
         </div>
       </div>
@@ -231,7 +245,9 @@ export default function SintesisForm({ visitaId }: Props) {
           value={form.objetivos_tratamiento || ''}
           onChange={(e) => setForm({ ...form, objetivos_tratamiento: e.target.value })}
           rows={4}
-          className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+          className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none overflow-hidden"
+              onInput={(e) => { const t = e.target as HTMLTextAreaElement; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px' }}
+              ref={(el) => { if (el && el.value) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }}
           placeholder="Objetivos para esta sesión y a medio plazo..."
         />
       </div>
