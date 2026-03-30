@@ -9,19 +9,19 @@ interface Props {
 }
 
 const CAMPOS = [
-  { key: 'motivo_consulta', label: 'Motivo de consulta', rows: 2 },
-  { key: 'sintomas_principales', label: 'Síntomas principales', rows: 3 },
-  { key: 'evolucion', label: 'Evolución desde la última visita', rows: 2 },
-  { key: 'antecedentes', label: 'Antecedentes relevantes', rows: 2 },
-  { key: 'digestivo', label: 'Digestivo', rows: 2 },
-  { key: 'sueno', label: 'Sueño', rows: 2 },
-  { key: 'energia', label: 'Energía', rows: 2 },
-  { key: 'estado_emocional', label: 'Estado emocional', rows: 2 },
-  { key: 'habitos', label: 'Hábitos', rows: 2 },
-  { key: 'ejercicio', label: 'Ejercicio', rows: 2 },
-  { key: 'alimentacion', label: 'Alimentación', rows: 2 },
-  { key: 'menstruacion', label: 'Menstruación', rows: 2 },
-  { key: 'observaciones_libres', label: 'Observaciones libres', rows: 3 },
+  { key: 'motivo_consulta', label: 'Motivo de consulta', rows: 3, full: true },
+  { key: 'sintomas_principales', label: 'Síntomas principales y generales', rows: 4, full: true },
+  { key: 'evolucion', label: 'Evolución desde la última visita', rows: 3, full: true },
+  { key: 'antecedentes', label: 'Antecedentes relevantes', rows: 3, full: false },
+  { key: 'digestivo', label: 'Síntomas digestivos', rows: 3, full: false },
+  { key: 'sueno', label: 'Sueño', rows: 3, full: false },
+  { key: 'energia', label: 'Energía', rows: 3, full: false },
+  { key: 'estado_emocional', label: 'Estado emocional', rows: 3, full: false },
+  { key: 'habitos', label: 'Hábitos', rows: 3, full: false },
+  { key: 'ejercicio', label: 'Ejercicio', rows: 3, full: false },
+  { key: 'menstruacion', label: 'Menstruación', rows: 3, full: false },
+  { key: 'valores_analiticos', label: 'Valores analíticos / Datos clave', rows: 5, full: true },
+  { key: 'observaciones_libres', label: 'Observaciones libres', rows: 4, full: true },
 ] as const
 
 export default function AnamnesisForm({ visitaId }: Props) {
@@ -96,14 +96,14 @@ export default function AnamnesisForm({ visitaId }: Props) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {CAMPOS.map(({ key, label, rows }) => (
-          <div key={key} className={rows >= 3 ? 'md:col-span-2' : ''}>
+        {CAMPOS.map(({ key, label, rows, full }) => (
+          <div key={key} className={full ? 'md:col-span-2' : ''}>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
             <textarea
               value={form[key] || ''}
               onChange={(e) => setForm({ ...form, [key]: e.target.value })}
               rows={rows}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-vertical"
             />
           </div>
         ))}

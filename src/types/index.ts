@@ -86,6 +86,7 @@ export interface Anamnesis {
   ejercicio: string | null
   alimentacion: string | null
   menstruacion: string | null
+  valores_analiticos: string | null
   observaciones_libres: string | null
   created_at: string
 }

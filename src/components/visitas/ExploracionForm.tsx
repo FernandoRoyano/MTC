@@ -2,10 +2,15 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Save, Check, Plus, Trash2, X, Image } from 'lucide-react'
+import { Save, Check, Plus, Trash2, X, ImageIcon, ZoomIn } from 'lucide-react'
 
 interface Props {
   visitaId: string
+}
+
+interface LenguaImagen {
+  url: string
+  signedUrl: string
 }
 
 // Posiciones del pulso
@@ -48,9 +53,9 @@ export default function ExploracionForm({ visitaId }: Props) {
   // Lengua
   const [lengua, setLengua] = useState<Record<string, string>>({})
   const [lenguaId, setLenguaId] = useState<string | null>(null)
-  const [lenguaImageUrl, setLenguaImageUrl] = useState<string | null>(null)
-  const [lenguaPreview, setLenguaPreview] = useState<string | null>(null)
+  const [lenguaImagenes, setLenguaImagenes] = useState<LenguaImagen[]>([])
   const [uploadingImg, setUploadingImg] = useState(false)
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   // Pulso (puede haber múltiples: inicio, durante, final)
@@ -86,12 +91,28 @@ export default function ExploracionForm({ visitaId }: Props) {
       CAMPOS_LENGUA.forEach(({ key }) => { values[key] = lenguaRes.data[key] || '' })
       values.notas_libres = lenguaRes.data.notas_libres || ''
       setLengua(values)
-      if (lenguaRes.data.imagen_url) {
-        setLenguaImageUrl(lenguaRes.data.imagen_url)
-        const { data: signedData } = await supabase.storage
-          .from('imagenes-lengua')
-          .createSignedUrl(lenguaRes.data.imagen_url, 3600)
-        if (signedData?.signedUrl) setLenguaPreview(signedData.signedUrl)
+
+      // Cargar múltiples imágenes desde imagen_url (JSON array) o string legacy
+      const rawUrl = lenguaRes.data.imagen_url
+      if (rawUrl) {
+        let urls: string[] = []
+        try {
+          const parsed = JSON.parse(rawUrl)
+          urls = Array.isArray(parsed) ? parsed : [rawUrl]
+        } catch {
+          urls = [rawUrl]
+        }
+
+        const imagenes: LenguaImagen[] = []
+        for (const url of urls) {
+          const { data: signedData } = await supabase.storage
+            .from('imagenes-lengua')
+            .createSignedUrl(url, 3600)
+          if (signedData?.signedUrl) {
+            imagenes.push({ url, signedUrl: signedData.signedUrl })
+          }
+        }
+        setLenguaImagenes(imagenes)
       }
     }
 
@@ -121,12 +142,18 @@ export default function ExploracionForm({ visitaId }: Props) {
     setLoading(false)
   }
 
+  function getImagenUrlPayload(): string | null {
+    if (lenguaImagenes.length === 0) return null
+    const urls = lenguaImagenes.map((img) => img.url)
+    return JSON.stringify(urls)
+  }
+
   async function guardar() {
     setSaving(true)
     setSaved(false)
 
     // Guardar lengua
-    const lenguaPayload = { visita_id: visitaId, ...lengua, imagen_url: lenguaImageUrl }
+    const lenguaPayload = { visita_id: visitaId, ...lengua, imagen_url: getImagenUrlPayload() }
     if (lenguaId) {
       await supabase.from('exploracion_lengua').update(lenguaPayload).eq('id', lenguaId)
     } else {
@@ -174,22 +201,21 @@ export default function ExploracionForm({ visitaId }: Props) {
       .upload(filePath, file)
 
     if (!error) {
-      setLenguaImageUrl(filePath)
       const { data: signedData } = await supabase.storage
         .from('imagenes-lengua')
         .createSignedUrl(filePath, 3600)
-      if (signedData?.signedUrl) setLenguaPreview(signedData.signedUrl)
+      if (signedData?.signedUrl) {
+        setLenguaImagenes((prev) => [...prev, { url: filePath, signedUrl: signedData.signedUrl }])
+      }
     }
     setUploadingImg(false)
+    if (fileRef.current) fileRef.current.value = ''
   }
 
-  async function eliminarImagenLengua() {
-    if (lenguaImageUrl) {
-      await supabase.storage.from('imagenes-lengua').remove([lenguaImageUrl])
-    }
-    setLenguaImageUrl(null)
-    setLenguaPreview(null)
-    if (fileRef.current) fileRef.current.value = ''
+  async function eliminarImagenLengua(index: number) {
+    const img = lenguaImagenes[index]
+    await supabase.storage.from('imagenes-lengua').remove([img.url])
+    setLenguaImagenes((prev) => prev.filter((_, i) => i !== index))
   }
 
   function addPulso() {
@@ -256,24 +282,34 @@ export default function ExploracionForm({ visitaId }: Props) {
       {/* LENGUA */}
       {seccion === 'lengua' && (
         <div className="space-y-4">
-          {/* Imagen de lengua */}
+          {/* Imágenes de lengua — múltiples */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Foto de lengua</label>
-            {lenguaPreview ? (
-              <div className="relative inline-block">
-                <img
-                  src={lenguaPreview}
-                  alt="Lengua"
-                  className="w-48 h-48 object-cover rounded-xl border border-arena-200"
-                />
-                <button
-                  onClick={eliminarImagenLengua}
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ) : (
+            <label className="block text-sm font-medium text-gray-700 mb-2">Fotos de lengua</label>
+            <div className="flex flex-wrap gap-3">
+              {lenguaImagenes.map((img, index) => (
+                <div key={img.url} className="relative group">
+                  <img
+                    src={img.signedUrl}
+                    alt={`Lengua ${index + 1}`}
+                    className="w-32 h-32 object-cover rounded-xl border border-arena-200 cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => setLightboxImg(img.signedUrl)}
+                  />
+                  <button
+                    onClick={() => setLightboxImg(img.signedUrl)}
+                    className="absolute bottom-1.5 left-1.5 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => eliminarImagenLengua(index)}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+
+              {/* Botón añadir foto */}
               <div>
                 <input
                   ref={fileRef}
@@ -288,22 +324,22 @@ export default function ExploracionForm({ visitaId }: Props) {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploadingImg}
-                  className="flex items-center gap-2 px-4 py-3 border-2 border-dashed border-arena-300 rounded-xl text-sm text-gray-500 hover:border-salvia-400 hover:text-salvia-600 transition-colors disabled:opacity-50"
+                  className="w-32 h-32 flex flex-col items-center justify-center gap-1.5 border-2 border-dashed border-arena-300 rounded-xl text-sm text-gray-400 hover:border-salvia-400 hover:text-salvia-600 transition-colors disabled:opacity-50"
                 >
                   {uploadingImg ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-salvia-500" />
-                      Subiendo...
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-salvia-500" />
+                      <span className="text-xs">Subiendo...</span>
                     </>
                   ) : (
                     <>
-                      <Image className="w-4 h-4" />
-                      Subir foto de lengua
+                      <ImageIcon className="w-5 h-5" />
+                      <span className="text-xs">Añadir foto</span>
                     </>
                   )}
                 </button>
               </div>
-            )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -324,7 +360,7 @@ export default function ExploracionForm({ visitaId }: Props) {
               value={lengua.notas_libres || ''}
               onChange={(e) => setLengua({ ...lengua, notas_libres: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+              className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-vertical"
             />
           </div>
         </div>
@@ -427,7 +463,7 @@ export default function ExploracionForm({ visitaId }: Props) {
                   value={observacion[key] || ''}
                   onChange={(e) => setObservacion({ ...observacion, [key]: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-none"
+                  className="w-full px-3 py-2 border border-arena-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-salvia-300 text-sm resize-vertical"
                 />
               ) : (
                 <input
@@ -438,6 +474,27 @@ export default function ExploracionForm({ visitaId }: Props) {
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* LIGHTBOX — Ampliar foto */}
+      {lightboxImg && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setLightboxImg(null)}
+        >
+          <button
+            onClick={() => setLightboxImg(null)}
+            className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <img
+            src={lightboxImg}
+            alt="Lengua ampliada"
+            className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
     </div>
